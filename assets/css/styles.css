@@ -1,0 +1,1473 @@
+/* ==========================================================================
+   FIRERISK STUDIO - SISTEMA DE DISEÑO TÉRMICO Y EVALUACIÓN DE INCENDIOS
+   Estética Minimalista de Telemetría Técnica con Detalles Representativos de Fuego
+   ========================================================================== */
+
+:root {
+  /* Paleta Oscura Técnica por Defecto */
+  --bg-app: #090d16;
+  --bg-card: #111726;
+  --bg-card-subtle: #161e31;
+  --bg-input: #0d1322;
+  --border-subtle: #1e293b;
+  --border-focus: #ff6a00;
+  --border-hover: #334155;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  /* Acentos de Llama, Energía y Fuego */
+  --flame-yellow: #ffb703;
+  --flame-amber: #fb8500;
+  --flame-orange: #ff5400;
+  --flame-red: #d90429;
+  --flame-critical: #ef233c;
+  
+  --flame-glow-soft: rgba(255, 84, 0, 0.15);
+  --flame-glow-bright: rgba(255, 84, 0, 0.35);
+  
+  /* Estados de Riesgo */
+  --risk-low: #10b981;
+  --risk-low-bg: rgba(16, 185, 129, 0.12);
+  --risk-mod: #f59e0b;
+  --risk-mod-bg: rgba(245, 158, 11, 0.12);
+  --risk-high: #f97316;
+  --risk-high-bg: rgba(249, 115, 22, 0.15);
+  --risk-crit: #ef4444;
+  --risk-crit-bg: rgba(239, 68, 68, 0.18);
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+  
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Modo Claro Dinámico (Opcional mediante botón de tema) */
+[data-theme="light"] {
+  --bg-app: #f4f6fa;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --bg-input: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-focus: #ff5400;
+  --border-hover: #cbd5e1;
+  
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+  
+  --flame-glow-soft: rgba(255, 84, 0, 0.08);
+  --flame-glow-bright: rgba(255, 84, 0, 0.2);
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================================================
+   RESET Y ESTRUCTURA BASE
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.5;
+  padding: 24px 16px 60px;
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.font-mono {
+  font-family: var(--font-mono) !important;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* ==========================================================================
+   ENCABEZADO PRINCIPAL (BRANDING & CONTROLES)
+   ========================================================================== */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 0 18px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Ícono de llama con aura térmica */
+.flame-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: radial-gradient(circle, rgba(255, 84, 0, 0.2) 0%, rgba(217, 4, 41, 0.05) 70%);
+  border: 1px solid rgba(255, 84, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px var(--flame-glow-soft);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.flame-icon-badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 24px var(--flame-glow-bright);
+}
+
+.flame-svg {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 2px 6px rgba(255, 84, 0, 0.5));
+}
+
+.header-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--flame-amber);
+  background-color: rgba(251, 133, 0, 0.1);
+  border: 1px solid rgba(251, 133, 0, 0.25);
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--flame-orange);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--flame-orange);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.header-main-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.header-main-title span {
+  color: var(--flame-orange);
+  font-weight: 700;
+}
+
+.header-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-ctrl {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-ctrl:hover {
+  background: var(--bg-card-subtle);
+  border-color: var(--border-hover);
+  color: var(--text-main);
+}
+
+.btn-icon-only {
+  padding: 7px 9px;
+}
+
+/* ==========================================================================
+   TARJETAS Y CONTENEDORES MODULARES
+   ========================================================================== */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 18px 20px;
+  transition: border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text-main);
+}
+
+.card-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.badge-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--flame-amber);
+  background: rgba(251, 133, 0, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(251, 133, 0, 0.2);
+}
+
+/* Indicadores visuales en encabezados */
+.icon-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.thermal-indicator { background-color: var(--flame-amber); box-shadow: 0 0 6px var(--flame-amber); }
+.flame-indicator { background-color: var(--flame-orange); box-shadow: 0 0 6px var(--flame-orange); }
+.energy-indicator { background-color: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
+.radar-indicator { background-color: var(--flame-red); box-shadow: 0 0 6px var(--flame-red); }
+
+/* ==========================================================================
+   FORMULARIO DEL SECTOR (GRID DE ENTRADAS)
+   ========================================================================== */
+.sector-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 14px;
+}
+
+.field-span-2 { grid-column: span 2; }
+.field-span-3 { grid-column: span 3; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.input-wrapper:hover {
+  border-color: var(--border-hover);
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px var(--flame-glow-soft);
+}
+
+.input-icon {
+  font-size: 0.85rem;
+  padding-left: 10px;
+  color: var(--text-dim);
+  user-select: none;
+}
+
+.input-unit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  padding-right: 10px;
+  user-select: none;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 8px 10px;
+}
+
+.form-select {
+  cursor: pointer;
+  background-color: var(--bg-input);
+}
+
+/* ==========================================================================
+   TABLA DE COMBUSTIBLES (TABULAR MODERNA CON DETALLES DE FUEGO)
+   ========================================================================== */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-input);
+}
+
+.thermal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.thermal-table th {
+  background-color: var(--bg-card-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.4px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.unit-sub {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-transform: none;
+}
+
+.thermal-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.thermal-table tbody tr {
+  transition: background-color 0.12s ease;
+}
+
+.thermal-table tbody tr:hover {
+  background-color: rgba(255, 84, 0, 0.03);
+}
+
+.thermal-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Inputs incrustados en celdas de la tabla */
+.table-input,
+.table-select {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 5px 6px;
+  border-radius: var(--radius-sm);
+  transition: all 0.12s ease;
+}
+
+.table-input:hover,
+.table-select:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-subtle);
+}
+
+.table-input:focus,
+.table-select:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 1px var(--border-focus);
+}
+
+.table-select {
+  cursor: pointer;
+  background-color: var(--bg-input);
+}
+
+/* Célula de cálculo con badge térmico */
+.heat-cell-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  color: var(--flame-amber);
+  font-size: 0.95rem;
+}
+
+/* Botón eliminar fila */
+.btn-del-fuel {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 4px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-del-fuel:hover {
+  color: var(--flame-red);
+  background-color: rgba(217, 4, 41, 0.1);
+}
+
+/* Botón Agregar Combustible con detalle de llama */
+.table-footer-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-add-material {
+  background: linear-gradient(135deg, rgba(255, 84, 0, 0.12) 0%, rgba(251, 133, 0, 0.08) 100%);
+  border: 1px solid rgba(255, 84, 0, 0.35);
+  color: var(--flame-amber);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px var(--flame-glow-soft);
+  transition: all 0.15s ease;
+}
+
+.btn-add-material:hover {
+  background: linear-gradient(135deg, rgba(255, 84, 0, 0.22) 0%, rgba(251, 133, 0, 0.16) 100%);
+  border-color: var(--flame-orange);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.table-helper-tip {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   GRID INFERIOR DE 2 COLUMNAS (TELEMETRÍA + MEDIDOR DE AMENAZA)
+   ========================================================================== */
+.dashboard-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* TARJETAS DE LECTURA TÉRMICA */
+.energy-readouts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.readout-box {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.readout-box.readout-critical {
+  border-color: rgba(255, 84, 0, 0.4);
+  background: linear-gradient(180deg, rgba(255, 84, 0, 0.06) 0%, rgba(217, 4, 41, 0.03) 100%);
+  box-shadow: 0 0 12px var(--flame-glow-soft);
+}
+
+.readout-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.unit-tag {
+  background-color: var(--bg-card-subtle);
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.unit-flame {
+  background-color: rgba(255, 84, 0, 0.15);
+  color: var(--flame-orange);
+}
+
+.text-flame {
+  color: var(--flame-amber);
+}
+
+.readout-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 6px 0 2px;
+  letter-spacing: -0.5px;
+}
+
+.val-flame {
+  color: var(--flame-critical) !important;
+  font-size: 1.6rem !important;
+  text-shadow: 0 0 12px rgba(239, 35, 60, 0.4);
+}
+
+.readout-foot {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  line-height: 1.2;
+}
+
+/* TERMINAL DE CÓDIGO PARA FÓRMULAS */
+.terminal-formula-box {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.terminal-title {
+  background-color: var(--bg-card-subtle);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.terminal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red { background-color: #ef4444; }
+.terminal-dot.yellow { background-color: #f59e0b; }
+.terminal-dot.green { background-color: #10b981; }
+
+.terminal-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-left: 4px;
+}
+
+.terminal-code {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #94a3b8;
+  padding: 10px 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.hl-var {
+  color: var(--flame-amber);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   MEDIDOR DE AMENAZA TÉRMICA Y PORCENTAJE DE RIESGO
+   ========================================================================== */
+.flame-meter-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 8px 0;
+}
+
+.meter-radial-wrap {
+  position: relative;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.meter-flame-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--flame-glow-soft) 0%, transparent 70%);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.meter-prefix {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+}
+
+.meter-percentage {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.meter-caption {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Barra de progreso de gradiente térmico */
+.thermal-gradient-meter {
+  width: 100%;
+}
+
+.meter-scale-markers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+}
+
+.meter-track {
+  width: 100%;
+  height: 10px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 35%, #f97316 70%, #ef4444 100%);
+  border-radius: 999px;
+  position: relative;
+  transition: width 0.4s ease;
+}
+
+.meter-glow-head {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Badges de Riesgo */
+.risk-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.risk-low {
+  background-color: var(--risk-low-bg);
+  color: var(--risk-low);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.risk-moderate {
+  background-color: var(--risk-mod-bg);
+  color: var(--risk-mod);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.risk-high {
+  background-color: var(--risk-high-bg);
+  color: var(--risk-high);
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+.risk-critical {
+  background-color: var(--risk-crit-bg);
+  color: var(--risk-crit);
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* MÉTICAS DE PROTECCIÓN CONTRA INCENDIOS */
+.protection-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.prot-card {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.prot-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.prot-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.prot-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.prot-val {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  margin: 1px 0;
+}
+
+.prot-desc {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  line-height: 1.15;
+}
+
+/* Diagnóstico Técnico */
+.diagnostic-box {
+  background-color: var(--bg-input);
+  border-left: 3px solid var(--flame-amber);
+  padding: 8px 12px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.diagnostic-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--flame-amber);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.diag-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--flame-amber);
+}
+
+.diagnostic-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   BOTONERA INFERIOR (RESETEAR Y GENERAR PDF)
+   ========================================================================== */
+.app-action-bar {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  padding: 10px 0;
+  margin-top: 6px;
+}
+
+.btn-action-fire {
+  background: linear-gradient(135deg, #ff5400 0%, #d90429 100%);
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px var(--flame-glow-bright);
+  transition: all 0.15s ease;
+}
+
+.btn-action-fire:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 84, 0, 0.45);
+}
+
+.btn-action-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.btn-action-secondary:hover {
+  background-color: var(--bg-card-subtle);
+  border-color: var(--border-hover);
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD Y ADAPTACIÓN EN DISPOSITIVOS
+   ========================================================================== */
+@media (max-width: 900px) {
+  .dashboard-split-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sector-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .field-span-3 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 12px 8px 40px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .sector-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-span-2,
+  .field-span-3 {
+    grid-column: span 1;
+  }
+
+  .energy-readouts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .protection-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-action-bar {
+    flex-direction: column;
+  }
+
+  .btn-action-fire,
+  .btn-action-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   MODAL DE VISTA PREVIA Y PERSONALIZACIÓN DEL INFORME TÉCNICO OFICIAL
+   ========================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 8, 15, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 24px 16px;
+  animation: fadeInModal 0.2s ease-out;
+}
+
+.modal-backdrop.is-active {
+  display: flex;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-dialog {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 960px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--flame-amber);
+  background: rgba(251, 133, 0, 0.12);
+  border: 1px solid rgba(251, 133, 0, 0.3);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.5px;
+}
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-close-modal {
+  font-size: 1.1rem;
+  padding: 6px 10px;
+  line-height: 1;
+}
+
+/* Barra de personalización de metadatos */
+.report-meta-toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 12px 20px;
+  background-color: var(--bg-card-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-field label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.meta-field input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 6px 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.meta-field input:focus {
+  border-color: var(--border-focus);
+}
+
+.modal-body {
+  padding: 24px 20px;
+  background-color: #1b212f;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   HOJA DE INFORME OFICIAL (ESTILO DOCUMENTO TÉCNICO A4)
+   ========================================================================== */
+.official-sheet {
+  background-color: #ffffff;
+  color: #111827;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 14mm 14mm;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-sans);
+  font-size: 8.8pt;
+  line-height: 1.35;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* Encabezado del documento */
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  border-bottom: 2pt solid #111827;
+  padding-bottom: 8pt;
+  margin-bottom: 10pt;
+  gap: 12pt;
+}
+
+.sheet-brand-box {
+  display: flex;
+  align-items: center;
+  gap: 10pt;
+}
+
+.sheet-logo-icon {
+  font-size: 24pt;
+  background-color: #fff1e6;
+  border: 1.5pt solid #ff5400;
+  border-radius: 4px;
+  padding: 4pt 8pt;
+  line-height: 1;
+}
+
+.sheet-main-title {
+  font-size: 13pt;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.sheet-main-sub {
+  font-size: 7.8pt;
+  font-weight: 700;
+  color: #c2410c;
+  letter-spacing: 0.5px;
+  margin-top: 1pt;
+}
+
+.sheet-legal-note {
+  font-size: 7pt;
+  color: #64748b;
+  margin-top: 2pt;
+}
+
+.sheet-doc-meta {
+  border: 1pt solid #cbd5e1;
+  background-color: #f8fafc;
+  padding: 4pt 8pt;
+  min-width: 140pt;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3pt;
+  border-radius: 3px;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+}
+
+.meta-lbl {
+  font-weight: 700;
+  color: #475569;
+}
+
+.meta-val {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Secciones del informe */
+.sheet-section {
+  margin-bottom: 9pt;
+}
+
+.sheet-sec-title {
+  font-size: 8.5pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #0f172a;
+  background-color: #f1f5f9;
+  border-left: 3pt solid #ff5400;
+  padding: 3pt 6pt;
+  margin-bottom: 5pt;
+}
+
+/* Tablas formales de datos */
+.sheet-data-table,
+.sheet-grid-table,
+.sheet-mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.2pt;
+}
+
+.sheet-data-table td,
+.sheet-grid-table th,
+.sheet-grid-table td,
+.sheet-mini-table td {
+  border: 0.75pt solid #cbd5e1;
+  padding: 3.5pt 5pt;
+  vertical-align: middle;
+}
+
+.cell-head {
+  background-color: #f8fafc;
+  font-weight: 700;
+  color: #334155;
+  font-size: 7.8pt;
+}
+
+.cell-body {
+  color: #0f172a;
+}
+
+.sheet-grid-table th {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 7.2pt;
+  letter-spacing: 0.3px;
+}
+
+.sheet-grid-table tbody tr:nth-child(even) {
+  background-color: #fbfcfd;
+}
+
+.sheet-totals-row td {
+  background-color: #f8fafc;
+  border-top: 1.5pt solid #0f172a;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* Sección 3: Desglose de fórmulas y resultados */
+.sheet-calc-split {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 8pt;
+  align-items: stretch;
+}
+
+.sheet-formulas-col {
+  display: flex;
+}
+
+.sheet-results-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5pt;
+}
+
+.sheet-result-card.result-hero {
+  border: 1.5pt solid #ff5400;
+  background: #fff8f5;
+  padding: 6pt 8pt;
+  text-align: center;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.res-title {
+  font-size: 7.2pt;
+  font-weight: 800;
+  color: #c2410c;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.res-val-big {
+  font-size: 22pt;
+  font-weight: 900;
+  color: #d90429;
+  line-height: 1;
+  margin: 3pt 0 1pt;
+}
+
+.res-unit {
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: #475569;
+}
+
+.res-sub-tag {
+  font-size: 6.8pt;
+  font-weight: 800;
+  color: #15803d;
+  background-color: #dcfce7;
+  padding: 1pt 6pt;
+  border-radius: 2px;
+  margin-top: 3pt;
+  border: 0.5pt solid #86efac;
+}
+
+.sheet-result-mini {
+  border: 0.75pt solid #cbd5e1;
+  background-color: #f8fafc;
+  padding: 4pt 6pt;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+}
+
+/* Sección 4: Grilla de evaluación de riesgo */
+.sheet-risk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 8pt;
+  margin-bottom: 5pt;
+}
+
+.risk-summary-box,
+.risk-requirements-box {
+  border: 0.75pt solid #cbd5e1;
+  background-color: #f8fafc;
+  padding: 5pt 7pt;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+}
+
+.risk-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 7.5pt;
+}
+
+.tag-level {
+  color: #15803d;
+  font-weight: 800;
+}
+
+.req-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3pt;
+}
+
+.req-label {
+  font-size: 7.2pt;
+  font-weight: 700;
+  color: #475569;
+}
+
+.req-item strong {
+  font-size: 8.2pt;
+  color: #0f172a;
+}
+
+.req-ref {
+  font-size: 6.8pt;
+  color: #64748b;
+  font-style: italic;
+}
+
+.sheet-diagnostic-box {
+  border-left: 2.5pt solid #ff5400;
+  background-color: #f8fafc;
+  padding: 4pt 7pt;
+  font-size: 7.5pt;
+  color: #334155;
+  line-height: 1.3;
+}
+
+/* Sección 5: Firmas y responsabilidad legal */
+.sheet-footer-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30pt;
+  margin-top: 12pt;
+  padding-top: 8pt;
+}
+
+.sheet-sig-box {
+  text-align: center;
+}
+
+.sig-line {
+  border-top: 1pt solid #0f172a;
+  width: 85%;
+  margin: 22pt auto 4pt;
+}
+
+.sig-name {
+  font-size: 8.2pt;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.sig-meta {
+  font-size: 7.2pt;
+  color: #475569;
+}
+
+.sig-role {
+  font-size: 6.8pt;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-top: 2pt;
+}
+
+.sheet-legal-footer {
+  border-top: 0.75pt solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 6.8pt;
+  color: #94a3b8;
+  padding-top: 4pt;
+  margin-top: 8pt;
+}
+
+@media (max-width: 768px) {
+  .report-meta-toolbar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .report-meta-toolbar {
+    grid-template-columns: 1fr;
+  }
+}

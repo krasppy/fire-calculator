@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireRisk | Calculador de Carga Térmica y Riesgo de Incendio</title>
+
+  <!-- Tipografía moderna: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Hojas de estilo -->
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <link rel="stylesheet" href="./assets/css/print.css" media="print">
+</head>
+
+<body>
+
+  <div class="app-layout">
+
+    <!-- ENCABEZADO Y BARRA DE CONTROL TÉCNICA -->
+    <header class="app-header">
+      <div class="header-brand">
+        <!-- Ícono de Llama Térmica Dinámica -->
+        <div class="flame-icon-badge" id="headerFlameBadge">
+          <svg class="flame-svg" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 2C9.5 5.5 8 8 8 11C8 13.5 9.5 15.5 11 16.5C10.5 15 11 13.5 12 12C13 13.5 13.5 15 13 16.5C14.5 15.5 16 13.5 16 11C16 8 14.5 5.5 12 2Z"
+              fill="url(#flameGradientInner)" />
+            <path
+              d="M12 2C8.5 7 5 10.5 5 15C5 18.866 8.13401 22 12 22C15.866 22 19 18.866 19 15C19 10.5 15.5 7 12 2ZM12 20C9.23858 20 7 17.7614 7 15C7 11.8 9.5 9 12 5C14.5 9 17 11.8 17 15C17 17.7614 14.7614 20 12 20Z"
+              fill="url(#flameGradientOuter)" />
+            <defs>
+              <linearGradient id="flameGradientOuter" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ff7a00" />
+                <stop offset="60%" stop-color="#ff3b00" />
+                <stop offset="100%" stop-color="#d90429" />
+              </linearGradient>
+              <linearGradient id="flameGradientInner" x1="12" y1="12" x2="12" y2="16.5" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ffea00" />
+                <stop offset="100%" stop-color="#ff9100" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div class="header-titles">
+          <div class="header-tag-pill">
+            <span class="status-dot"></span>
+            <span>SISTEMA DE SEGURIDAD CONTRA INCENDIOS • LEY 19.587 / IRAM 3528</span>
+          </div>
+          <h1 class="header-main-title">FireRisk <span>Studio</span></h1>
+          <p class="header-subtitle">Cálculo de Carga de Fuego, Potencial Térmico e Índice de Ignitabilidad de
+            Materiales</p>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas superior -->
+      <div class="header-controls">
+        <button type="button" id="btnLoadExample" class="btn-ctrl" title="Cargar datos del sector residencial">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Ejemplo Base</span>
+        </button>
+
+        <button type="button" id="btnExportCsv" class="btn-ctrl" title="Exportar tabla a CSV compatible con Excel">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Exportar CSV</span>
+        </button>
+
+        <button type="button" id="btnThemeToggle" class="btn-ctrl btn-icon-only" title="Cambiar tema Claro / Oscuro"
+          aria-label="Cambiar tema">
+          <!-- Ícono Sol / Luna -->
+          <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL DEL SISTEMA -->
+    <main class="main-dashboard">
+
+      <!-- TARJETA 1: PARÁMETROS DEL SECTOR Y ENTORNO -->
+      <section class="card sector-config-card" aria-label="Parámetros del Sector de Incendio">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="icon-indicator thermal-indicator"></span>
+            <h2 class="card-title">1. Parámetros del Sector de Incendio</h2>
+          </div>
+          <span class="card-tag">Configuración del Entorno</span>
+        </div>
+
+        <div class="sector-form-grid">
+          <!-- Sector Incendio -->
+          <div class="form-group field-span-2">
+            <label for="sectorName" class="form-label">Sector de Incendio</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📍</span>
+              <input type="text" id="sectorName" class="form-input" value="Dormitorio Ppal."
+                placeholder="Ej. Dormitorio Principal, Almacén, Cocina">
+            </div>
+          </div>
+
+          <!-- Código Sector -->
+          <div class="form-group">
+            <label for="sectorCode" class="form-label">Código Sector</label>
+            <div class="input-wrapper">
+              <span class="input-icon">#</span>
+              <input type="text" id="sectorCode" class="form-input text-center font-mono" value="01" placeholder="01">
+            </div>
+          </div>
+
+          <!-- Actividad del Sector -->
+          <div class="form-group field-span-3">
+            <label for="sectorActivity" class="form-label">Actividad del Sector</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🏢</span>
+              <input type="text" id="sectorActivity" class="form-input" value="Residencial"
+                placeholder="Ej. Residencial, Comercial, Depósito Industrial">
+            </div>
+          </div>
+
+          <!-- Superficie Piso (m²) -->
+          <div class="form-group">
+            <label for="sectorSurface" class="form-label">Superficie Piso (m²)</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📐</span>
+              <input type="number" id="sectorSurface" class="form-input text-right font-mono" value="20" min="1"
+                step="any">
+              <span class="input-unit">m²</span>
+            </div>
+          </div>
+
+          <!-- Riesgo Sector -->
+          <div class="form-group">
+            <label for="sectorRisk" class="form-label">Riesgo Sector</label>
+            <div class="input-wrapper">
+              <select id="sectorRisk" class="form-select font-mono text-center">
+                <option value="1">1 (Explosivo)</option>
+                <option value="2">2 (Inflamable)</option>
+                <option value="3" selected>3 (Muy Combustible)</option>
+                <option value="4">4 (Combustible)</option>
+                <option value="5">5 (Poco Combustible)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fecha -->
+          <div class="form-group">
+            <label for="sectorDate" class="form-label">Fecha de Relevamiento</label>
+            <div class="input-wrapper">
+              <input type="date" id="sectorDate" class="form-input text-center font-mono" value="2007-03-15">
+            </div>
+          </div>
+
+          <!-- Tipo de personas / Ocupantes -->
+          <div class="form-group field-span-3">
+            <label for="sectorOccupancy" class="form-label">Tipo de Personas y Ocupación</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👥</span>
+              <input type="text" id="sectorOccupancy" class="form-input"
+                value="Habitantes hombres y mujeres jóvenes sin limitaciones."
+                placeholder="Descripción de los ocupantes habituales">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TARJETA 2: TABLA DE MATERIALES Y CARGAS TÉRMICAS -->
+      <section class="card materials-table-card" aria-label="Materiales y Cargas Térmicas">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="icon-indicator flame-indicator"></span>
+            <h2 class="card-title">2. Inventario de Materiales Combustibles</h2>
+          </div>
+          <span class="badge-count" id="materialsCountBadge">3 Combustibles</span>
+        </div>
+
+        <div class="table-container">
+          <table class="thermal-table" id="fuelsTable">
+            <thead>
+              <tr>
+                <th class="th-material">Material Combustible</th>
+                <th class="th-risk text-center">Clasificación Riesgo</th>
+                <th class="th-qty text-right">Cantidad (kg)</th>
+                <th class="th-power text-right">Poder Calorífico <span class="unit-sub">(Mcal/kg)</span></th>
+                <th class="th-heat text-right">Carga Calor <span class="unit-sub">(Mcal)</span></th>
+                <th class="th-action text-center"></th>
+              </tr>
+            </thead>
+            <tbody id="fuelsTableBody">
+              <!-- Renderizado dinámicamente mediante app.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Botón para añadir combustible con estilo representativo de fuego/energía -->
+        <div class="table-footer-controls">
+          <button type="button" id="btnAddFuel" class="btn-add-material">
+            <span class="btn-spark-icon">🔥</span>
+            <span>Agregar Combustible</span>
+          </button>
+          <span class="table-helper-tip">💡 Escribe para autocompletar con más de 18 materiales normados</span>
+        </div>
+      </section>
+
+      <!-- TARJETA 3: TELEMETRÍA TÉRMICA Y DESGLOSE DE ENERGÍA -->
+      <div class="dashboard-split-grid">
+
+        <!-- TELEMETRÍA DE ENERGÍA Y RESULTADOS -->
+        <section class="card telemetry-card" aria-label="Telemetría de Carga de Fuego">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="icon-indicator energy-indicator"></span>
+              <h2 class="card-title">3. Balance de Energía y Carga de Fuego</h2>
+            </div>
+            <span class="card-tag">Equivalencias Oficiales</span>
+          </div>
+
+          <div class="energy-readouts-grid">
+
+            <!-- Readout 1: Carga Calor Total Mcal -->
+            <div class="readout-box">
+              <div class="readout-label">
+                <span>Carga Calor Total</span>
+                <span class="unit-tag">Mcal</span>
+              </div>
+              <div class="readout-value font-mono" id="totalHeatMcal">264,0</div>
+              <div class="readout-foot">Poder calorífico acumulado</div>
+            </div>
+
+            <!-- Readout 2: Carga Calor Total MJ -->
+            <div class="readout-box">
+              <div class="readout-label">
+                <span>Energía Térmica Total</span>
+                <span class="unit-tag">MJ</span>
+              </div>
+              <div class="readout-value font-mono" id="totalHeatMJ">1.104,97</div>
+              <div class="readout-foot">Factor: 1 Mcal = 4.1855 MJ</div>
+            </div>
+
+            <!-- Readout 3: Carga de Fuego A (kg/m²) - DESTACADO -->
+            <div class="readout-box readout-critical">
+              <div class="readout-label">
+                <span class="text-flame">Carga de Fuego A (Qf)</span>
+                <span class="unit-tag unit-flame">kg/m²</span>
+              </div>
+              <div class="readout-value font-mono val-flame" id="fireLoadA">3</div>
+              <div class="readout-foot">Equivalente en madera estándar (18.41 MJ/kg)</div>
+            </div>
+
+          </div>
+
+          <!-- Panel de Fórmulas y Verificación Normativa -->
+          <div class="terminal-formula-box">
+            <div class="terminal-title">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-name">Ecuaciones de Combustión Aplicadas</span>
+            </div>
+            <pre class="terminal-code"><code>• 1 Mcal = 4.1855 MJ
+• Carga Calor Total (MJ) = Carga Calor Total (Mcal) × 4.1855
+• Superficie de Análisis = <span id="formulaSurfaceVal" class="hl-var">20</span> m²
+• Carga de Fuego Ponderada (MJ/m²) = Calor Total (MJ) / Superficie
+• Carga Equivalente Qf = Calor Total (Mcal) / (Superficie × 4.4 Mcal/kg)
+• Patrón de Referencia Madera = 18.41 MJ/kg (4.4 Mcal/kg)</code></pre>
+          </div>
+        </section>
+
+        <!-- SECCIÓN ESTRELLA: MEDIDOR DE AMENAZA TÉRMICA Y PORCENTAJE DE RIESGO -->
+        <section class="card threat-gauge-card" aria-label="Evaluación de Riesgo de Incendio">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="icon-indicator radar-indicator"></span>
+              <h2 class="card-title">4. Índice de Riesgo e Ignitabilidad</h2>
+            </div>
+            <span id="riskLevelBadge" class="risk-badge risk-low">Bajo (Leve)</span>
+          </div>
+
+          <!-- Pantalla del Medidor de Fuego / Riesgo -->
+          <div class="flame-meter-display">
+            <div class="meter-radial-wrap">
+              <div class="meter-flame-halo" id="flameHaloEffect"></div>
+              <div class="meter-stat">
+                <span class="meter-prefix">Probabilidad / Potencial</span>
+                <span class="meter-percentage font-mono" id="riskPercentageVal">20.8%</span>
+                <span class="meter-caption">Riesgo de Ignición y Propagación</span>
+              </div>
+            </div>
+
+            <!-- Barra de Progreso Térmico Multi-Zona -->
+            <div class="thermal-gradient-meter">
+              <div class="meter-scale-markers">
+                <span>0% Leve</span>
+                <span>25% Moderado</span>
+                <span>50% Alto</span>
+                <span>75% Crítico</span>
+                <span>100%</span>
+              </div>
+              <div class="meter-track">
+                <div class="meter-fill" id="riskProgressBar" style="width: 20.8%;">
+                  <span class="meter-glow-head"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Métricas de Protección Contra Incendios -->
+          <div class="protection-metrics-grid">
+            <div class="prot-card">
+              <div class="prot-icon">🛡️</div>
+              <div class="prot-info">
+                <span class="prot-title">Resistencia al Fuego</span>
+                <strong class="prot-val font-mono" id="fireResistanceVal">F-30 (30 min)</strong>
+                <span class="prot-desc">Resistencia estructural exigida</span>
+              </div>
+            </div>
+
+            <div class="prot-card">
+              <div class="prot-icon">🧯</div>
+              <div class="prot-info">
+                <span class="prot-title">Dotación Extintora</span>
+                <strong class="prot-val font-mono" id="extinguisherVal">1 Extintor ABC (5 kg)</strong>
+                <span class="prot-desc">Potencial mínimo 1A:5B a ≤ 20m</span>
+              </div>
+            </div>
+
+            <div class="prot-card">
+              <div class="prot-icon">📊</div>
+              <div class="prot-info">
+                <span class="prot-title">Índice IRI</span>
+                <strong class="prot-val font-mono" id="riskIndexScore">21 / 100</strong>
+                <span class="prot-desc">Escala de peligrosidad intrínseca</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagnóstico Técnico Dinámico -->
+          <div class="diagnostic-box">
+            <div class="diagnostic-header">
+              <span class="diag-bullet"></span>
+              <strong>Diagnóstico Técnico del Sector</strong>
+            </div>
+            <p id="riskDescriptionText" class="diagnostic-text">
+              Riesgo ordinario. Combustión controlable con medios básicos de primera intervención.
+            </p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- BOTONERA DE ACCIÓN Y EXPORTACIÓN -->
+      <footer class="app-action-bar">
+        <button type="button" id="btnReset" class="btn-action-secondary"
+          title="Limpiar la planilla para un nuevo análisis">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <polyline points="23 20 23 14 17 14"></polyline>
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+          </svg>
+          <span>Resetear Planilla</span>
+        </button>
+
+        <button type="button" id="btnPrintPdf" class="btn-action-fire"
+          title="Abrir informe técnico formal listo para imprimir">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>Generar Informe / Planilla PDF</span>
+        </button>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL DE VISTA PREVIA Y PERSONALIZACIÓN DEL INFORME TÉCNICO OFICIAL A4
+       ========================================================================== -->
+  <div id="reportModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-dialog">
+
+      <!-- Encabezado del modal -->
+      <header class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">INFORME TÉCNICO OFICIAL</span>
+          <h3 class="modal-title">Planilla y Memoria de Cálculo de Carga de Fuego</h3>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-action-fire" id="btnPrintModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span>Imprimir / Guardar como PDF</span>
+          </button>
+          <button type="button" class="btn-ctrl btn-close-modal" id="btnCloseModal"
+            title="Cerrar vista previa">✕</button>
+        </div>
+      </header>
+
+      <!-- Barra de personalización de metadatos del informe -->
+      <section class="report-meta-toolbar" aria-label="Personalización del informe">
+        <div class="meta-field">
+          <label for="metaCompany">Establecimiento / Razón Social:</label>
+          <input type="text" id="metaCompany" value="Establecimiento Modelo S.A."
+            placeholder="Nombre del establecimiento">
+        </div>
+        <div class="meta-field">
+          <label for="metaProfessional">Profesional Responsable:</label>
+          <input type="text" id="metaProfessional" value="Ing. en Higiene y Seguridad"
+            placeholder="Nombre del profesional">
+        </div>
+        <div class="meta-field">
+          <label for="metaLicense">Matrícula / Registro HyST:</label>
+          <input type="text" id="metaLicense" value="MP-5892 / Reg. Of. HyST" placeholder="N° de matrícula">
+        </div>
+        <div class="meta-field">
+          <label for="metaReportNum">N° de Informe:</label>
+          <input type="text" id="metaReportNum" value="INF-CF-2026-001" placeholder="Ej. INF-CF-01">
+        </div>
+      </section>
+
+      <!-- CUERPO DE LA PLANILLA / INFORME OFICIAL LISTO PARA IMPRIMIR -->
+      <div class="modal-body">
+
+        <article id="officialReportSheet" class="official-sheet">
+
+          <!-- ENCABEZADO OFICIAL DEL INFORME -->
+          <header class="sheet-header">
+            <div class="sheet-brand-box">
+              <div class="sheet-logo-icon">🔥</div>
+              <div>
+                <h1 class="sheet-main-title">MEMORIA TÉCNICA DE CÁLCULO</h1>
+                <p class="sheet-main-sub">DETERMINACIÓN DE CARGA DE FUEGO Y EVALUACIÓN DE RIESGO DE INCENDIO</p>
+                <p class="sheet-legal-note">Marco Legal: Ley Nac. 19.587 / Decreto 351/79 (Anexo VII) • Norma IRAM 3528
+                  • Criterio NFPA</p>
+              </div>
+            </div>
+
+            <div class="sheet-doc-meta">
+              <div class="meta-row">
+                <span class="meta-lbl">INFORME N°:</span>
+                <span class="meta-val font-mono" id="repReportNum">INF-CF-2026-001</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">FECHA:</span>
+                <span class="meta-val font-mono" id="repDate">15/03/2007</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">HOJA:</span>
+                <span class="meta-val font-mono">1 de 1</span>
+              </div>
+            </div>
+          </header>
+
+          <!-- SECCIÓN 1: IDENTIFICACIÓN DEL ESTABLECIMIENTO Y SECTOR -->
+          <section class="sheet-section">
+            <h2 class="sheet-sec-title">1. Identificación del Establecimiento y Sector de Incendio</h2>
+            <table class="sheet-data-table">
+              <tr>
+                <td class="cell-head" style="width: 22%;">Establecimiento / Razón Social:</td>
+                <td class="cell-body" style="width: 44%;" id="repCompany">Establecimiento Modelo S.A.</td>
+                <td class="cell-head" style="width: 18%;">Código de Sector:</td>
+                <td class="cell-body font-mono text-center" style="width: 16%;" id="repSectorCode">01</td>
+              </tr>
+              <tr>
+                <td class="cell-head">Sector de Incendio:</td>
+                <td class="cell-body" id="repSectorName">Dormitorio Ppal.</td>
+                <td class="cell-head">Actividad:</td>
+                <td class="cell-body" id="repSectorActivity">Residencial</td>
+              </tr>
+              <tr>
+                <td class="cell-head">Superficie de Piso:</td>
+                <td class="cell-body font-mono"><strong id="repSectorSurface">20,0</strong> m²</td>
+                <td class="cell-head">Clasificación Riesgo Sector:</td>
+                <td class="cell-body font-mono text-center" id="repSectorRisk">R3 (Muy Comb.)</td>
+              </tr>
+              <tr>
+                <td class="cell-head">Tipo de Personas / Ocupación:</td>
+                <td class="cell-body" colspan="3" id="repSectorOccupancy">Habitantes hombres y mujeres jóvenes sin
+                  limitaciones.</td>
+              </tr>
+            </table>
+          </section>
+
+          <!-- SECCIÓN 2: PLANILLA DE INVENTARIO DE COMBUSTIBLES -->
+          <section class="sheet-section">
+            <h2 class="sheet-sec-title">2. Planilla de Inventario de Materiales Combustibles y Cargas Térmicas</h2>
+            <table class="sheet-grid-table">
+              <thead>
+                <tr>
+                  <th style="width: 6%;" class="text-center">Item</th>
+                  <th style="width: 38%;">Material Combustible</th>
+                  <th style="width: 14%;" class="text-center">Clase Riesgo</th>
+                  <th style="width: 12%;" class="text-right">Masa (kg)</th>
+                  <th style="width: 14%;" class="text-right">Poder Calorífico<br><small>(Mcal/kg)</small></th>
+                  <th style="width: 16%;" class="text-right">Carga Calor<br><small>(Mcal)</small></th>
+                </tr>
+              </thead>
+              <tbody id="repFuelsTableBody">
+                <!-- Se puebla dinámicamente -->
+              </tbody>
+              <tfoot>
+                <tr class="sheet-totals-row font-mono">
+                  <td colspan="3"><strong>TOTALES DEL SECTOR (<span id="repTotalItems">3</span> materiales):</strong>
+                  </td>
+                  <td class="text-right"><strong id="repTotalMass">61,0</strong> kg</td>
+                  <td class="text-center">—</td>
+                  <td class="text-right"><strong id="repTotalHeatMcal">264,0</strong> Mcal</td>
+                </tr>
+              </tfoot>
+            </table>
+          </section>
+
+          <!-- SECCIÓN 3: MEMORIA DE CÁLCULO Y DETERMINACIÓN DE LA CARGA DE FUEGO -->
+          <section class="sheet-section">
+            <h2 class="sheet-sec-title">3. Memoria de Cálculo y Equivalencias Térmicas</h2>
+            <div class="sheet-calc-split">
+
+              <!-- Ecuaciones aplicadas -->
+              <div class="sheet-formulas-col">
+                <table class="sheet-mini-table">
+                  <tr>
+                    <td class="cell-head">Equivalencia Energética:</td>
+                    <td class="cell-body font-mono">1 Mcal = 4,1855 MJ</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-head">Energía Térmica Total (MJ):</td>
+                    <td class="cell-body font-mono" id="repFormulaMJ">264,0 Mcal × 4,1855 = <strong>1.104,97 MJ</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="cell-head">Densidad Térmica (q):</td>
+                    <td class="cell-body font-mono" id="repFormulaDensity">1.104,97 MJ / 20,0 m² = <strong>55,25
+                        MJ/m²</strong></td>
+                  </tr>
+                  <tr>
+                    <td class="cell-head">Patrón Madera Estándar:</td>
+                    <td class="cell-body font-mono">18,41 MJ/kg (4,4 Mcal/kg)</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-head">Fórmula Carga de Fuego (Qf):</td>
+                    <td class="cell-body font-mono" id="repFormulaQf">264,0 Mcal / (20,0 m² × 4,4) = <strong>3,00
+                        kg/m²</strong></td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Resultados principales -->
+              <div class="sheet-results-col">
+                <div class="sheet-result-card result-hero">
+                  <span class="res-title">CARGA DE FUEGO PONDERADA (Qf)</span>
+                  <span class="res-val-big font-mono" id="repHeroQf">3</span>
+                  <span class="res-unit">kg/m² (equivalente en madera)</span>
+                  <span class="res-sub-tag" id="repLoadClass">CARGA BAJA (≤ 15 kg/m²)</span>
+                </div>
+                <div class="sheet-result-mini">
+                  <span>Energía Total Acumulada:</span>
+                  <strong class="font-mono" id="repTotalMJ">1.104,97 MJ</strong>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- SECCIÓN 4: EVALUACIÓN DEL ÍNDICE DE RIESGO Y MEDIDAS DE PROTECCIÓN -->
+          <section class="sheet-section">
+            <h2 class="sheet-sec-title">4. Evaluación del Índice de Riesgo y Medidas de Protección Exigidas</h2>
+
+            <div class="sheet-risk-grid">
+
+              <div class="risk-summary-box">
+                <div class="risk-line">
+                  <span>Índice de Riesgo de Incendio (IRI):</span>
+                  <strong class="font-mono" id="repRiskScore">21 / 100</strong>
+                </div>
+                <div class="risk-line">
+                  <span>Nivel Cualitativo de Peligro:</span>
+                  <strong id="repRiskLevel" class="tag-level">BAJO (LEVE)</strong>
+                </div>
+                <div class="risk-line">
+                  <span>Potencial Estimado de Ignición / Propagación:</span>
+                  <strong class="font-mono" id="repRiskPct">20,8%</strong>
+                </div>
+              </div>
+
+              <div class="risk-requirements-box">
+                <div class="req-item">
+                  <span class="req-label">Resistencia al Fuego Requerida (Condición F):</span>
+                  <strong class="font-mono" id="repFireResistance">F-30 (30 minutos)</strong>
+                  <span class="req-ref">Según Anexo VII Tabla 2.2.1 - Dec. 351/79</span>
+                </div>
+                <div class="req-item">
+                  <span class="req-label">Dotación Mínima de Extintores de Incendio:</span>
+                  <strong id="repExtinguishers">1 Extintor ABC de 5 kg con potencial mínimo 1A:5B</strong>
+                  <span class="req-ref">Distancia máxima de recorrido no mayor a 20 metros</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="sheet-diagnostic-box">
+              <strong>Dictamen y Diagnóstico Técnico:</strong>
+              <p id="repDiagnostic">El sector presenta una baja carga térmica correspondiente a actividad residencial
+                ordinaria. La combustión es controlable con elementos portátiles de primera intervención sin
+                requerimientos de instalaciones fijas obligatorias.</p>
+            </div>
+          </section>
+
+          <!-- SECCIÓN 5: RESPONSABILIDAD TÉCNICA Y FIRMAS -->
+          <footer class="sheet-footer-signatures">
+            <div class="sheet-sig-box">
+              <div class="sig-line"></div>
+              <p class="sig-name" id="repProfessionalName">Ing. en Higiene y Seguridad</p>
+              <p class="sig-meta" id="repProfessionalLicense">MP-5892 / Reg. Of. HyST</p>
+              <p class="sig-role">Profesional Especialista Actuante</p>
+            </div>
+
+            <div class="sheet-sig-box">
+              <div class="sig-line"></div>
+              <p class="sig-name" id="repCompanySig">Responsable del Establecimiento</p>
+              <p class="sig-meta">Firma, Sello y Aclaración</p>
+              <p class="sig-role">Recepción y Notificación del Informe</p>
+            </div>
+          </footer>
+
+          <div class="sheet-legal-footer">
+            <span>Validez: 1 año a partir de la fecha de emisión o ante modificaciones estructurales o de carga
+              combustible en el sector.</span>
+            <span class="font-mono">Sistema FireRisk Studio • Memoria Oficial</span>
+          </div>
+
+        </article>
+
+      </div>
+    </div>
+  </div>
+
+  </main>
+  </div>
+
+  <!-- Datalist para autocompletado rápido de materiales normados -->
+  <datalist id="materialsPresetList">
+    <option value="Madera de la cama"></option>
+    <option value="Colchón (algodón)"></option>
+    <option value="Sábanas (seda)"></option>
+    <option value="Madera (pino / álamo)"></option>
+    <option value="Madera dura (roble / eucalipto)"></option>
+    <option value="Papel y libros compactos"></option>
+    <option value="Cartón en cajas"></option>
+    <option value="Plásticos (Polietileno / PP)"></option>
+    <option value="Goma espuma / Poliuretano"></option>
+    <option value="Poliestireno expandido (Telgopor)"></option>
+    <option value="PVC / Vinilo"></option>
+    <option value="Textiles de algodón"></option>
+    <option value="Lana / Fieltro"></option>
+    <option value="Caucho / Neumáticos"></option>
+    <option value="Aceites y grasas vegetales"></option>
+    <option value="Alcohol etílico (solvente)"></option>
+    <option value="Gasolina / Nafta / Diluyentes"></option>
+    <option value="Gasoil / Diésel"></option>
+    <option value="Gas licuado / Propano / Butano"></option>
+  </datalist>
+
+  <!-- Módulos JavaScript -->
+  <script src="./assets/js/materials.js"></script>
+  <script src="./assets/js/calculator.js"></script>
+  <script src="./assets/js/app.js"></script>
+</body>
+
+</html>
