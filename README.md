@@ -90,7 +90,7 @@ De acuerdo a la imagen de referencia `docs/version-previa.png` y la reglamentaci
 
 ## 💻 Cómo Ejecutarlo
 
-Al tratarse de una web estática pura (HTML5, CSS3 y Vanilla JavaScript), no requiere compilación ni dependencias de Node.js:
+Al tratarse de una web estática pura (HTML5, CSS3 y JavaScript), no requiere compilación ni dependencias de Node.js:
 
 1. Simplemente haz doble clic en `index.html` para abrirlo en cualquier navegador (Chrome, Edge, Firefox, Safari).
 2. O levanta un servidor local liviano si lo prefieres:
