@@ -1,4 +1,4 @@
-# FireRisk Studio | Calculadora de Carga Térmica y Riesgo de Incendio
+# FireRisk Studio Cristian & Asociados | Calculadora de Carga Térmica y Riesgo de Incendio
 
 Aplicación web estática, minimalista y responsiva con una estética de **telemetría técnica y seguridad contra incendios**, diseñada para el cálculo paramétrico de Carga de Fuego ponderada, potencial térmico e Índice de Riesgo e ignitabilidad de materiales y entornos según normativas técnicas (IRAM 3528, Ley 19.587 / Dec. 351/79 y NFPA).
 
